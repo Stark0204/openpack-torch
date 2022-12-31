@@ -139,7 +139,15 @@ class OpenPackImu(torch.utils.data.Dataset):
     def preprocessing(self) -> None:
         """This method is called after ``load_dataset()`` and apply preprocessing to loaded data.
         """
-        logger.warning("No preprocessing is applied.")
+        for seq_dict in self.data:
+            x = seq_dict.get("data")
+            #x = np.clip(x, -3, +3)
+            #x = (x + 3.) / 6.
+            max, min = np.max(x), np.min(x)
+            x = (x - min) / (max - min)   
+            seq_dict["data"] = x
+            
+        logger.warning("Min-Max Scalling is applied.")
 
     @property
     def num_classes(self) -> int:
