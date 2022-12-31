@@ -125,7 +125,7 @@ class OpenPackBaseDataModule(pl.LightningDataModule):
         return DataLoader(
             self.op_train,
             batch_size=self.batch_size,
-            shuffle=True,
+            shuffle=False,
             num_workers=self.cfg.train.num_workers)
 
     def val_dataloader(self) -> List[DataLoader]:
