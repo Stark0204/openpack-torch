@@ -138,13 +138,25 @@ class OpenPackImu(torch.utils.data.Dataset):
         self.index = tuple(index)
 
     def preprocessing(self) -> None:
-        """This method is called after ``load_dataset()`` and apply preprocessing to loaded data.
-        """
-        if self.cfg.mode == 'Train':
-            for i, seq_dict in enumerate(self.data):
-                x = seq_dict.get("data")
-                seq_dict["data"] = x
-            
+      if cfg.mode == 'train':
+        for i, seq_dict in enumerate(self.data):
+          if i == 0:
+            d = seq_dict['data']
+            print(d.shape)
+          else:
+            print(seq_dict['data'].shape)
+            d = np.append(d, seq_dict['data'], 1)
+        
+        max = np.max(d, 1)
+        self.max = max.reshape((max.shape[0], 1))
+        min = np.min(d, 1)
+        self.min = min.reshape((min.shape[0], 1))
+
+      for i, seq_dict in enumerate(self.data):
+        x = seq_dict.get("data")
+        x = (x - self.min) / (self.max - self.min)
+        seq_dict["data"] = x
+              
         logger.warning("Min-Max Scalling is applied.")
 
     @property
