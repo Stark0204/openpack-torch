@@ -10,6 +10,8 @@ import torch
 from omegaconf import DictConfig, open_dict
 from openpack_toolkit import OPENPACK_OPERATIONS
 
+import json
+
 logger = getLogger(__name__)
 
 
@@ -138,17 +140,10 @@ class OpenPackImu(torch.utils.data.Dataset):
         self.index = tuple(index)
 
     def preprocessing(self) -> None:
-      if self.cfg.mode == 'train':
-        for i, seq_dict in enumerate(self.data):
-          if i == 0:
-            d = seq_dict['data']
-          else:
-            d = np.append(d, seq_dict['data'], 1)
-        
-        max = np.max(d, 1)
-        self.max = max.reshape((max.shape[0], 1)
-        min = np.min(d, 1)
-        self.min = min.reshape((min.shape[0], 1))
+        max = self.cfg.train.max
+        min = self.cfg.train.min
+        self.max = np.array(json.loads(max))
+        self.min = np.array(json.loads(min))
 
        for i, seq_dict in enumerate(self.data):
          x = seq_dict.get("data")
