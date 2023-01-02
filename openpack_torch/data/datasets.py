@@ -138,7 +138,7 @@ class OpenPackImu(torch.utils.data.Dataset):
         self.index = tuple(index)
 
     def preprocessing(self) -> None:
-      if cfg.mode == 'train':
+      if self.cfg.mode == 'train':
         for i, seq_dict in enumerate(self.data):
           if i == 0:
             d = seq_dict['data']
