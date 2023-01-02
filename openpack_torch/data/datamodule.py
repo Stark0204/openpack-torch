@@ -95,12 +95,14 @@ class OpenPackBaseDataModule(pl.LightningDataModule):
             self.op_train = None
 
         if stage in (None, "fit", "validate"):
+            self.cfg.mode = "val"
             kwargs = self.get_kwargs_for_datasets(stage="validate")
             self.op_val = self._init_datasets(split.val, kwargs)
         else:
             self.op_val = None
 
         if stage in (None, "test"):
+            self.cfg.mode = "test"
             kwargs = self.get_kwargs_for_datasets(stage="test")
             self.op_test = self._init_datasets(split.test, kwargs)
         else:
