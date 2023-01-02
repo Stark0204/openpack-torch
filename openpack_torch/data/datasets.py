@@ -64,6 +64,7 @@ class OpenPackImu(torch.utils.data.Dataset):
         self.window = window
         self.submission = submission
         self.debug = debug
+        self.cfg   = cfg
 
         self.load_dataset(
             cfg,
@@ -139,9 +140,10 @@ class OpenPackImu(torch.utils.data.Dataset):
     def preprocessing(self) -> None:
         """This method is called after ``load_dataset()`` and apply preprocessing to loaded data.
         """
-        for seq_dict in self.data:
-            x = seq_dict.get("data")
-            seq_dict["data"] = x
+        if self.cfg.mode == 'Train':
+            for i, seq_dict in enumerate(self.data):
+                x = seq_dict.get("data")
+                seq_dict["data"] = x
             
         logger.warning("Min-Max Scalling is applied.")
 
