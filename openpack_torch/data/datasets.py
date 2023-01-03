@@ -140,17 +140,17 @@ class OpenPackImu(torch.utils.data.Dataset):
         self.index = tuple(index)
 
     def preprocessing(self) -> None:
-        max = self.cfg.train.max
-        min = self.cfg.train.min
-        self.max = np.array(json.loads(max))
-        self.min = np.array(json.loads(min))
-
-       for i, seq_dict in enumerate(self.data):
-         x = seq_dict.get("data")
-         x = (x - self.min) / (self.max - self.min)
-         seq_dict["data"] = x
+      max = self.cfg.train.max
+      min = self.cfg.train.min
+      self.max = np.array(json.loads(max))
+      self.min = np.array(json.loads(min))
+      
+      for i, seq_dict in enumerate(self.data):
+        x = seq_dict.get("data")
+        x = (x - self.min) / (self.max - self.min)
+        seq_dict["data"] = x
               
-        logger.warning(f"Min-Max Scalling is applied to {self.cfg.mode} set.")
+      logger.warning(f"Min-Max Scalling is applied to {self.cfg.mode} set.")
 
     @property
     def num_classes(self) -> int:
