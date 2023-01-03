@@ -149,7 +149,7 @@ class OpenPackImu(torch.utils.data.Dataset):
         x = seq_dict.get("data")
         x = (x - self.min) / (self.max - self.min)
         seq_dict["data"] = x
-        self.data[i] = seq_data
+        self.data[i] = seq_dict
               
       logger.warning(f"Min-Max Scalling is applied to {self.cfg.mode} set.")
 
