@@ -140,18 +140,33 @@ class OpenPackImu(torch.utils.data.Dataset):
         self.index = tuple(index)
 
     def preprocessing(self) -> None:
-      max = self.cfg.train.max
-      min = self.cfg.train.min
-      self.max = np.array(json.loads(max))
-      self.min = np.array(json.loads(min))
+      if self.cfg.pre_process.method == 'Min-Max':
+        max = self.cfg.pre_process.min_max.max
+        min = self.cfg.pre_process.min_max.min
+        self.max = np.array(json.loads(max))
+        self.min = np.array(json.loads(min))
       
-      for i, seq_dict in enumerate(self.data):
-        x = seq_dict.get("data")
-        x = (x - self.min) / (self.max - self.min)
-        seq_dict["data"] = x
-        self.data[i] = seq_dict
+        for i, seq_dict in enumerate(self.data):
+            x = seq_dict.get("data")
+            x = (x - self.min) / (self.max - self.min)
+            seq_dict["data"] = x
+            self.data[i] = seq_dict
               
-      logger.warning(f"Min-Max Scalling is applied to {self.cfg.mode} set.")
+        logger.warning(f"Min-Max Scalling is applied to {self.cfg.mode} set.")
+
+      elif self.cfg.pre_process.method == "Standard":
+        mean = self.cfg.pre_process.standard.mean
+        std = self.cfg.pre_process.standard.std
+        self.mean = np.array(json.loads(mean))
+        self.std = np.array(json.loads(std))
+      
+        for i, seq_dict in enumerate(self.data):
+            x = seq_dict.get("data")
+            x = (x - self.mean) / self.std
+            seq_dict["data"] = x
+            self.data[i] = seq_dict
+        
+        logger.warning(f"Standardization is applied to {self.cfg.mode} set.")
 
     @property
     def num_classes(self) -> int:
