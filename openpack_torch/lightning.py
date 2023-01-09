@@ -32,15 +32,17 @@ class BaseLightningModule(pl.LightningModule):
 
     def configure_optimizers(self) -> torch.optim.Optimizer:
         if self.cfg.train.optimizer.type == "Adam":
+            steps = 10
             optimizer = torch.optim.Adam(
                 self.parameters(),
                 lr=self.cfg.train.optimizer.lr,
                 weight_decay=self.cfg.train.optimizer.weight_decay,
             )
+            scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, steps)
         else:
             raise ValueError(
                 f"{self.cfg.train.optimizer.type} is not supported.")
-        return optimizer
+        return scheduler
 
     def calc_accuracy(self, y: torch.Tensor, t: torch.Tensor) -> torch.Tensor:
         """Returns accuracy score.
