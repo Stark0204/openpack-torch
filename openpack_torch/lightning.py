@@ -40,7 +40,7 @@ class BaseLightningModule(pl.LightningModule):
             if self.cfg.train.optimizer.scheduler.type == 'Cosine':
                 steps = self.cfg.train.optimizer.scheduler.steps
                 scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, steps)
-                return scheduler
+                return (optimizer, scheduler)
         else:
             raise ValueError(
                 f"{self.cfg.train.optimizer.type} is not supported.")
