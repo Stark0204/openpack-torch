@@ -39,6 +39,7 @@ class BaseLightningModule(pl.LightningModule):
             )
             if self.cfg.train.optimizer.scheduler.type == "Cosine":
                 scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, step_size=self.cfg.train.optimizer.scheduler.steps, gamma=0.1)
+                print(type(optimizer), type(scheduler))
                 return [optimizer], [scheduler]
         else:
             raise ValueError(
