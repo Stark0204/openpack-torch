@@ -140,7 +140,7 @@ class OpenPackImu(torch.utils.data.Dataset):
         self.index = tuple(index)
 
     def preprocessing(self) -> None:
-      if self.cfg.pre_process.method == 'Min-Max':
+      '''if self.cfg.pre_process.method == 'Min-Max':
         max = self.cfg.pre_process.min_max.max
         min = self.cfg.pre_process.min_max.min
         self.max = np.array(json.loads(max))
@@ -166,7 +166,8 @@ class OpenPackImu(torch.utils.data.Dataset):
             seq_dict["data"] = x
             self.data[i] = seq_dict
         
-        logger.warning(f"Standardization is applied to {self.cfg.mode} set.")
+        logger.warning(f"Standardization is applied to {self.cfg.mode} set.")'''
+        logger.warning(f"No preprocessing is applied to {self.cfg.mode} set")
 
     @property
     def num_classes(self) -> int:
