@@ -140,7 +140,7 @@ class OpenPackImu(torch.utils.data.Dataset):
         self.index = tuple(index)
 
     def preprocessing(self) -> None:
-      logger.warning(f"No preprocessing is applied to {self.cfg.mode} set")
+      #logger.warning(f"No preprocessing is applied to {self.cfg.mode} set")
       if self.cfg.pre_process.method == 'Min-Max':
         max = self.cfg.pre_process.min_max.max
         min = self.cfg.pre_process.min_max.min
@@ -155,13 +155,14 @@ class OpenPackImu(torch.utils.data.Dataset):
               
         logger.warning(f"Min-Max Scalling is applied to {self.cfg.mode} set.")
         
-      if self.cfg.pre_process.method == 'clip':
+      elif self.cfg.pre_process.method == 'clip':
         for i, seq_dict in enumerate(self.data):
           x = seq_dict.get("data")
           x = np.clip(x, -3, +3)
           x = (x + 3.) / 6.
           seq_dict["data"] = x
           self.data[i] = seq_dict
+        
         logger.warning(f"Clip-Min-Max Scalling is applied to {self.cfg.mode} set.")
 
       elif self.cfg.pre_process.method == "Standard":
