@@ -272,6 +272,7 @@ class OpenPackKeypoint(torch.utils.data.Dataset):
         self.classes = classes
         self.submission = submission
         self.debug = debug
+        self.cfg = cfg
 
         self.load_dataset(
             cfg,
@@ -334,7 +335,7 @@ class OpenPackKeypoint(torch.utils.data.Dataset):
             - [ ] DA (half_body_transform)
                 - https://github.com/open-mmlab/mmskeleton/blob/b4c076baa9e02e69b5876c49fa7c509866d902c7/mmskeleton/datasets/estimation.py#L62
         """
-        logger.warning("No preprocessing is applied.")
+        logger.warning(f"No preprocessing is applied to {self.cfg.mode} set")
 
     @ property
     def num_classes(self) -> int:
