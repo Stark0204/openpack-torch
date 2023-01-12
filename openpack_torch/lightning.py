@@ -73,9 +73,9 @@ class BaseLightningModule(pl.LightningModule):
         )
         return acc
 
-    def forward(self, x: torch.Tensor, y: None) -> torch.Tensor:
-        if y is not None:
-            return self.net(x, y)
+    def forward(self, x: torch.Tensor, m : int = None) -> torch.Tensor:
+        if m is True or m is None:
+            return self.net(x, mask = m)
         return self.net(x)
 
     def training_step(self, batch: Dict, batch_idx: int) -> Dict:
