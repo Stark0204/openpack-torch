@@ -74,9 +74,9 @@ class BaseLightningModule(pl.LightningModule):
         return acc
 
     def forward(self, x: torch.Tensor, m : int = None) -> torch.Tensor:
-        if m is True or m is None:
-            return self.net(x, mask = m)
-        return self.net(x)
+        if m is False:
+            return self.net(x)
+        return self.net(x, mask = m) # m can be a mask matrix or None
 
     def training_step(self, batch: Dict, batch_idx: int) -> Dict:
         raise NotImplementedError()
