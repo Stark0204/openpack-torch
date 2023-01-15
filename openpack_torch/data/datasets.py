@@ -163,7 +163,7 @@ class OpenPackImu(torch.utils.data.Dataset):
           j = i + 1
         else:
           j+=1
-      return np.abs(fft2(np.array(SI)))
+      return np.array(SI)
 
     def preprocessing(self) -> None:
       #logger.warning(f"No preprocessing is applied to {self.cfg.mode} set")
@@ -192,19 +192,15 @@ class OpenPackImu(torch.utils.data.Dataset):
         logger.warning(f"Clip-Min-Max Scalling is applied to {self.cfg.mode} set.")
       
       elif self.cfg.pre_process.method == '3M':
-        max = self.cfg.pre_process.mag_min_max.max
-        min = self.cfg.pre_process.mag_min_max.min
-        self.max = np.array(json.loads(max))
-        self.min = np.array(json.loads(min))
-
         for i, seq_dict in enumerate(self.data):
           x = seq_dict.get("data")
           x = self.operation_image(x)
-          x = (x - self.min) / (self.max - self.min)
+          x = np.clip(x, -3, +3)  
+          x = (x + 3) / 6
           seq_dict["data"] = x
           self.data[i] = seq_dict       
 
-        logger.warning(f"Mag-Min-Max Scalling is applied to {self.cfg.mode} set.")
+        logger.warning(f"Clip-Min-Max Scalling is applied to {self.cfg.mode} set.")
 
       elif self.cfg.pre_process.method == "Standard":
         mean = self.cfg.pre_process.standard.mean
