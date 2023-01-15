@@ -204,6 +204,7 @@ class OpenPackImu(torch.utils.data.Dataset):
       
       elif self.cfg.pre_process.method == 'clip-acc-gyro':
         for i, seq_dict in enumerate(self.data):
+          x = seq_dict.get("data")
           #******************************************#
           x = np.split(x, 8)
           y = []
