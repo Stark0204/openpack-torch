@@ -194,9 +194,9 @@ class OpenPackImu(torch.utils.data.Dataset):
       elif self.cfg.pre_process.method == '3M':
         for i, seq_dict in enumerate(self.data):
           x = seq_dict.get("data")
-          x = self.operation_image(x)
           x = np.clip(x, -3, +3)  
           x = (x + 3) / 6
+          x = self.operation_image(x)
           seq_dict["data"] = x
           self.data[i] = seq_dict       
 
