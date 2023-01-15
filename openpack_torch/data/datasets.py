@@ -181,7 +181,7 @@ class OpenPackImu(torch.utils.data.Dataset):
               
         logger.warning(f"Min-Max Scalling is applied to {self.cfg.mode} set.")
         
-      elif self.cfg.pre_process.method == 'clip':
+      elif self.cfg.pre_process.method == 'clip-acc':
         for i, seq_dict in enumerate(self.data):
           x = seq_dict.get("data")
           x = np.clip(x, -3, +3)
@@ -191,7 +191,7 @@ class OpenPackImu(torch.utils.data.Dataset):
         
         logger.warning(f"Clip-Min-Max Scalling is applied to {self.cfg.mode} set.")
       
-      elif self.cfg.pre_process.method == '3M':
+      elif self.cfg.pre_process.method == '3M-acc':
         for i, seq_dict in enumerate(self.data):
           x = seq_dict.get("data")
           x = np.clip(x, -3, +3)  
@@ -202,6 +202,29 @@ class OpenPackImu(torch.utils.data.Dataset):
 
         logger.warning(f"Clip-Min-Max Scalling is applied to {self.cfg.mode} set.")
       
+      elif self.cfg.pre_process.methods == 'clip-acc-gyro':
+        for i, seq_dict in enumerate(self.data):
+          #******************************************#
+          x = np.split(x, 8)
+          y = []
+          for j, h in enumerate(x):
+            if j % 2 == 0:
+              h = np.clip(h, -3, 3)
+              h = (h + 3) / 6
+              y.append(h)
+            else:
+              h = np.clip(h, -1000, 1000)
+              h = (h + 1000) / 2000
+              y.append(h)
+          x = np.array(y)
+          x = einops.rearrange(x, "f g t ->(f g) t")
+        #******************************************#
+          seq_dict["data"] = x
+          self.data[i] = seq_dict 
+        
+        logger.warning(f"Clip-Min-Max Scalling is applied to {self.cfg.mode} set.")
+          
+      
       elif self.cfg.pre_process.method == '3M-acc-gyro':
         for i, seq_dict in enumerate(self.data):
           x = seq_dict.get("data")
@@ -211,18 +234,15 @@ class OpenPackImu(torch.utils.data.Dataset):
           for j, h in enumerate(x):
             if j % 2 == 0:
               h = np.clip(h, -3, 3)
+              h = (h + 3) / 6
               y.append(h)
             else:
+              h = np.clip(h, -1000, 1000)
+              h = (h + 1000) / 2000
               y.append(h)
           x = np.array(y)
           x = einops.rearrange(x, "f g t ->(f g) t")
         #******************************************#
-          max = self.cfg.pre_process.mag_min_max.max
-          min = self.cfg.pre_process.mag_min_max.min
-          self.max = np.array(json.loads(max))
-          self.min = np.array(json.loads(min))
-          x = (x - self.min) / (self.max - self.min)
-
           x = self.operation_image(x)
           seq_dict["data"] = x
           self.data[i] = seq_dict       
