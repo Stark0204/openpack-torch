@@ -1,7 +1,7 @@
 """Dataset Class for OpenPack dataset.
 """
 import numpy as np
-from numpy.fft import fft2
+import einops
 
 from logging import getLogger
 from pathlib import Path
