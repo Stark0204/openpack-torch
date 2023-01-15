@@ -208,8 +208,8 @@ class OpenPackImu(torch.utils.data.Dataset):
           #******************************************#
           x = np.split(x, 8)
           y = []
-          for i, h in enumerate(x):
-            if i % 2 == 0:
+          for j, h in enumerate(x):
+            if j % 2 == 0:
               h = np.clip(h, -3, 3)
               y.append(h)
             else:
