@@ -202,7 +202,7 @@ class OpenPackImu(torch.utils.data.Dataset):
 
         logger.warning(f"Clip-Min-Max Scalling is applied to {self.cfg.mode} set.")
       
-      elif self.cfg.pre_process.methods == 'clip-acc-gyro':
+      elif self.cfg.pre_process.method == 'clip-acc-gyro':
         for i, seq_dict in enumerate(self.data):
           #******************************************#
           x = np.split(x, 8)
