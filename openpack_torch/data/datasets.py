@@ -201,6 +201,33 @@ class OpenPackImu(torch.utils.data.Dataset):
           self.data[i] = seq_dict       
 
         logger.warning(f"Clip-Min-Max Scalling is applied to {self.cfg.mode} set.")
+      
+      elif self.cfg.pre_process.method == '3M-acc-gyro':
+        for i, seq_dict in enumerate(self.data):
+          x = seq_dict.get("data")
+          #******************************************#
+          x = np.split(x, 8)
+          y = []
+          for i, h in enumerate(x):
+            if i % 2 == 0:
+              h = np.clip(h, -3, 3)
+              y.append(h)
+            else:
+              y.append(h)
+          x = np.array(y)
+          x = einops.rearrange(x, "f g t ->(f g) t")
+        #******************************************#
+          max = self.cfg.pre_process.mag_min_max.max
+          min = self.cfg.pre_process.mag_min_max.min
+          self.max = np.array(json.loads(max))
+          self.min = np.array(json.loads(min))
+          x = (x - self.min) / (self.max - self.min)
+
+          x = self.operation_image(x)
+          seq_dict["data"] = x
+          self.data[i] = seq_dict       
+
+        logger.warning(f"3m-acc-gyro Scalling is applied to {self.cfg.mode} set.")
 
       elif self.cfg.pre_process.method == "Standard":
         mean = self.cfg.pre_process.standard.mean
